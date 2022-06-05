@@ -10,7 +10,13 @@ class ForecastModel {
   factory ForecastModel.fromJson(Map<String, dynamic> json) => ForecastModel(
         temperature:
             List<double>.from(json["temperature"].map((x) => x.toDouble())),
-        dateTime: List<DateTime>.from(json["dateTime"]
-            .map((x) => DateTime.fromMillisecondsSinceEpoch(x * 1000))),
+        dateTime: List<DateTime>.from(
+          json["dateTime"].map(
+            (x) => DateTime.fromMillisecondsSinceEpoch(
+              x * 1000,
+              isUtc: true,
+            ).toLocal(),
+          ),
+        ),
       );
 }

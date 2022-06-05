@@ -24,10 +24,12 @@ class NodeModel {
         city: json["city"],
         longitude: json["longitude"],
         latitude: json["latitude"],
-        createdAt:
-            DateTime.fromMillisecondsSinceEpoch(json["createdAt"] * 1000),
-        updatedAt:
-            DateTime.fromMillisecondsSinceEpoch(json["updatedAt"] * 1000),
+        createdAt: DateTime.fromMillisecondsSinceEpoch(json["createdAt"] * 1000,
+                isUtc: true)
+            .toLocal(),
+        updatedAt: DateTime.fromMillisecondsSinceEpoch(json["updatedAt"] * 1000,
+                isUtc: true)
+            .toLocal(),
         lastReport: json["lastReport"] != null
             ? LastReport.fromJson(json["lastReport"])
             : null,

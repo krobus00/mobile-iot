@@ -23,10 +23,12 @@ class LastReport {
         humidity: json["humidity"].toDouble(),
         temperature: json["temperature"].toDouble(),
         heatIndex: json["heatIndex"].toDouble(),
-        createdAt:
-            DateTime.fromMillisecondsSinceEpoch(json["createdAt"] * 1000),
-        updatedAt:
-            DateTime.fromMillisecondsSinceEpoch(json["updatedAt"] * 1000),
+        createdAt: DateTime.fromMillisecondsSinceEpoch(json["createdAt"] * 1000,
+                isUtc: true)
+            .toLocal(),
+        updatedAt: DateTime.fromMillisecondsSinceEpoch(json["updatedAt"] * 1000,
+                isUtc: true)
+            .toLocal(),
       );
 
   Map<String, dynamic> toJson() => {

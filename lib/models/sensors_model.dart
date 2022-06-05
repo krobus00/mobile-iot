@@ -17,7 +17,8 @@ class ResampledModel {
             List<double>.from(json["temperature"].map((x) => x.toDouble())),
         heatIndex:
             List<double>.from(json["heatIndex"].map((x) => x.toDouble())),
-        dateTime: List<DateTime>.from(json["dateTime"]
-            .map((x) => DateTime.fromMillisecondsSinceEpoch(x * 1000))),
+        dateTime: List<DateTime>.from(json["dateTime"].map((x) =>
+            DateTime.fromMillisecondsSinceEpoch(x * 1000, isUtc: true)
+                .toLocal())),
       );
 }
