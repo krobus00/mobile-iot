@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_iot/injector/locator.dart';
 import 'package:mobile_iot/models/node_model.dart';
+import 'package:mobile_iot/models/node_pagination_model.dart';
 import 'package:mobile_iot/services/node_service.dart';
 import 'package:mobile_iot/utils/shared_preference.dart';
 
@@ -9,6 +10,7 @@ class NodeProvider with ChangeNotifier {
   final _nodeService = NodeService();
 
   List<NodeModel> _nodes = [];
+  bool _paginationHasNext = true;
   NodeModel? _node;
 
   NodeModel? get node => (_node);
@@ -22,16 +24,30 @@ class NodeProvider with ChangeNotifier {
 
   Future<bool> getNodes({
     String? search,
+    required int pageSize,
+    required int page,
+    required bool firstFetch,
   }) async {
     try {
-      List<NodeModel> nodes = await _nodeService.getNodes(
+      if (!_paginationHasNext && !firstFetch) {
+        return false;
+      }
+      NodePaginationModel pagination = await _nodeService.getNodes(
         search: search,
+        page: page,
+        pageSize: pageSize,
       );
-      _nodes = nodes;
+      if (firstFetch) {
+        _nodes = pagination.items;
+      } else {
+        _nodes.addAll(pagination.items);
+      }
+      _paginationHasNext = pagination.count >= pageSize * (page + 1);
+
       notifyListeners();
       return true;
     } catch (e) {
-      return false;
+      rethrow;
     }
   }
 

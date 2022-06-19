@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:mobile_iot/constants/endpoint.dart';
 import 'package:mobile_iot/injector/locator.dart';
 import 'package:mobile_iot/models/node_model.dart';
+import 'package:mobile_iot/models/node_pagination_model.dart';
 import 'package:mobile_iot/services/dio_service.dart';
 import 'package:mobile_iot/utils/logger.dart';
 import 'package:mobile_iot/utils/shared_preference.dart';
@@ -33,47 +34,25 @@ class NodeService {
     }
   }
 
-  Future<List<NodeModel>> getNodes({
+  Future<NodePaginationModel> getNodes({
     String? search,
-    // bool? top,
-    // bool? random,
-    // int? startPrice,
-    // int? endPrice,
-    // int? page = 1,
-    // int? paginate = 10,
-    // String? orderBy,
+    required int pageSize,
+    required int page,
   }) async {
     try {
-      // Map<String, dynamic> params = {
-      //   'page': page ?? 1,
-      //   'paginate': paginate ?? 10,
-      // };
-      // if (search != null) {
-      //   params['search'] = search;
-      // }
-      // if (top != null) {
-      //   params['top'] = "";
-      // }
-      // if (random != null) {
-      //   params['random'] = paginate ?? 10;
-      // }
-      // if (startPrice != null) {
-      //   params['start_price'] = startPrice;
-      // }
-      // if (endPrice != null) {
-      //   params['endPrice'] = endPrice;
-      // }
+      Map<String, dynamic> params = {
+        'pageSize': pageSize,
+        'page': page,
+      };
 
       final response = await _networkLocator.dio.get(
         nodesEndpoint,
-        // queryParameters: params,
+        queryParameters: params,
       );
-      var res = response.data['items'];
-      List<NodeModel> nodes = [];
-      for (var node in res) {
-        nodes.add(NodeModel.fromJson(node));
-      }
-      return nodes;
+
+      NodePaginationModel pagination =
+          NodePaginationModel.fromJson(response.data);
+      return pagination;
     } catch (e) {
       if (e.runtimeType == DioError) {
         var dioException = e as DioError;
